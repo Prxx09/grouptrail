@@ -12,7 +12,7 @@ grant select, insert, update on public.routing_budget to service_role;
 
 -- Only the server-side Edge Function can invoke this; no SECURITY DEFINER.
 create function public.consume_route_budget(p_user_id uuid)
-returns boolean language plpgsql security invoker set search_path = '' as $$
+returns boolean language plpgsql security invoker set search_path = '' as $routing_budget$
 declare
   v_day date := (now() at time zone 'UTC')::date;
   v_minute timestamptz := date_trunc('minute', now());
@@ -25,8 +25,8 @@ begin
   foreach v_subject in array array['global', p_user_id::text] loop
     select * into v_row from public.routing_budget where subject = v_subject;
     if found then
-      if v_row.day = v_day and v_row.day_count >= case when v_subject = 'global' then 500 else 100 end then return false; end if;
-      if v_row.minute = v_minute and v_row.minute_count >= case when v_subject = 'global' then 20 else 4 end then return false; end if;
+      if v_row.day = v_day and v_row.day_count >= (case when v_subject = 'global' then 500 else 100 end) then return false; end if;
+      if v_row.minute = v_minute and v_row.minute_count >= (case when v_subject = 'global' then 20 else 4 end) then return false; end if;
     end if;
   end loop;
   foreach v_subject in array array['global', p_user_id::text] loop
@@ -40,6 +40,6 @@ begin
   end loop;
   return true;
 end;
-$$;
+$routing_budget$;
 revoke all on function public.consume_route_budget(uuid) from public, anon, authenticated;
 grant execute on function public.consume_route_budget(uuid) to service_role;

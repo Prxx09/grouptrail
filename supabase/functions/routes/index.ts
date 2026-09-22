@@ -39,7 +39,7 @@ Deno.serve(async (req: Request) => {
     });
     if (!budget.ok) return reply(503, 'Route budget unavailable');
     if (await budget.json() !== true) return reply(429, 'Beta route limit reached; try later');
-    const upstream = await fetch(`https://api.openrouteservice.org/v2/directions/${route.profile}/geojson`, {
+    const upstream = await fetch(`https://api.heigit.org/openrouteservice/v2/directions/${route.profile}/geojson`, {
       method: 'POST',
       headers: { Authorization: key, 'Content-Type': 'application/json' },
       body: JSON.stringify({ coordinates: [route.origin, route.destination], instructions: true }),

@@ -39,7 +39,7 @@ test('routing endpoint authorization, validation and quota gates', async t => {
           assert.deepEqual(JSON.parse(init!.body as string), { p_user_id: 'tester' });
           return Response.json(scenario.budget ?? true, { status: scenario.budgetStatus ?? 200 });
         }
-        assert.equal(url, 'https://api.openrouteservice.org/v2/directions/foot-walking/geojson');
+        assert.equal(url, 'https://api.heigit.org/openrouteservice/v2/directions/foot-walking/geojson');
         assert.equal((init!.headers as Record<string, string>).Authorization, 'test-ors');
         return Response.json({ features: [] }, { status: scenario.upstreamStatus ?? 200 });
       };
