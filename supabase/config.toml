@@ -1,0 +1,6 @@
+project_id = "grouptrail"
+
+[functions.routes]
+# Authentication is performed inside the handler with Auth /user, including new JWT signing keys.
+verify_jwt = false
+entrypoint = "./functions/routes/index.ts"
